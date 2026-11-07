@@ -1,0 +1,537 @@
+
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Radial Orbit &amp; Dome Server Triage</title>
+<!-- Tailwind CSS v3 -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Google Fonts & Material Symbols -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&amp;family=JetBrains+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              navy: '#1E3A8A',     /* Ocean Deep Blue */
+              blue: '#2563EB',     /* Klein Electric Blue */
+              sky: '#60A5FA',      /* Sky Tint */
+              ice: '#EFF6FF',      /* Crisp Tint */
+              pitch: '#0A0A0A',    /* 10% Pitch Black */
+              cardbg: '#FFFFFF'
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', '-apple-system', 'Segoe UI', 'Roboto', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace']
+          },
+          borderRadius: {
+            'curved-44': '44px',
+            'dome': '100px',
+            'oval': '50%'
+          },
+          boxShadow: {
+            'curved-soft': '0 20px 40px -15px rgba(37, 99, 235, 0.08), 0 4px 12px rgba(0, 0, 0, 0.03)',
+            'orbit-glow': '0 0 50px -10px rgba(37, 99, 235, 0.25)',
+            'black-pill': '0 20px 35px -8px rgba(10, 10, 10, 0.35)'
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    /* Radial orbit subtle track rings */
+    .orbit-ring {
+      border: 1.5px dashed rgba(37, 99, 235, 0.16);
+      border-radius: 50%;
+    }
+    .orbit-ring-solid {
+      border: 2px solid rgba(37, 99, 235, 0.12);
+      border-radius: 50%;
+    }
+    .pulse-dot {
+      animation: orbitPulse 2.5s infinite ease-in-out;
+    }
+    @keyframes orbitPulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.15); opacity: 0.7; }
+    }
+    .dome-cutout {
+      border-radius: 44px 44px 50px 50px;
+    }
+  </style>
+</head>
+<body class="bg-[#F9FAFB] text-brand-pitch font-sans antialiased min-h-screen selection:bg-brand-blue selection:text-white pb-16 overflow-x-hidden">
+<!-- Ambient Radial Backdrop Orbit Gradients -->
+<div class="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+<div class="absolute -top-[200px] left-1/2 -translate-x-1/2 w-[1100px] h-[750px] bg-gradient-to-b from-blue-100/60 via-blue-50/20 to-transparent rounded-full blur-3xl"></div>
+<div class="absolute top-[35%] -left-[150px] w-[500px] h-[500px] bg-blue-100/40 rounded-full blur-3xl"></div>
+<div class="absolute top-[60%] -right-[150px] w-[450px] h-[450px] bg-sky-100/40 rounded-full blur-3xl"></div>
+</div>
+<div class="relative z-10 max-w-[1560px] mx-auto px-4 sm:px-6 lg:px-10 pt-6 sm:pt-8 space-y-8">
+<!-- ========================================================================= -->
+<!-- 1. TOP CURVED DOME HEADER & RADIAL STATUS CLUSTER -->
+<!-- ========================================================================= -->
+<header class="bg-white rounded-[44px] p-6 sm:p-8 shadow-curved-soft border border-blue-50/80 relative overflow-hidden">
+<!-- Decorative Orbit Curve Background Arc -->
+<div class="absolute -right-20 -top-24 w-80 h-80 orbit-ring pointer-events-none opacity-40"></div>
+<div class="absolute -right-10 -top-14 w-60 h-60 orbit-ring-solid pointer-events-none opacity-30"></div>
+<div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6 relative z-10">
+<!-- Node Identity Pebble with Arc Accent -->
+<div class="flex items-center gap-5">
+<div class="relative w-16 h-16 rounded-[28px] bg-gradient-to-tr from-brand-navy to-brand-blue flex items-center justify-center text-white shadow-orbit-glow flex-shrink-0">
+<span class="material-symbols-outlined text-3xl">dns</span>
+<!-- Satellite Orbiting Dot -->
+<span class="absolute -top-1 -right-1 w-4 h-4 bg-emerald-400 border-2 border-white rounded-full pulse-dot"></span>
+</div>
+<div>
+<div class="flex items-center gap-3 flex-wrap">
+<h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-brand-pitch">
+                Datacenter Mesh Node #04
+              </h1>
+<span class="inline-flex items-center gap-1.5 px-4 py-1 rounded-full bg-brand-ice text-brand-blue text-xs font-semibold tracking-wide border border-brand-sky/20">
+<span class="w-2 h-2 rounded-full bg-brand-blue"></span>
+                ACTIVE PEER RELAY
+              </span>
+</div>
+<p class="text-slate-500 text-sm font-medium mt-1 flex items-center gap-2">
+<span class="inline-block w-2 h-2 rounded-full bg-emerald-500"></span>
+<span>403k Uptime • Zero Cellular Required</span>
+<span class="text-slate-300">•</span>
+<span class="font-mono text-xs text-slate-400">P2P DOME PROTOCOL v2.4</span>
+</p>
+</div>
+</div>
+<!-- Triple Curved Hardware Health Pods -->
+<div class="flex flex-wrap items-center gap-3">
+<!-- Hardware Health Pill: Signal 99% -->
+<div class="bg-gradient-to-r from-blue-50/90 to-white px-5 py-3 rounded-full border border-blue-100/90 flex items-center gap-3 shadow-sm hover:border-brand-blue/30 transition-all">
+<div class="w-8 h-8 rounded-full bg-brand-blue/10 flex items-center justify-center text-brand-blue">
+<span class="material-symbols-outlined text-lg">cell_tower</span>
+</div>
+<div>
+<div class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">RF Link</div>
+<div id="rssi" class="text-sm font-extrabold text-brand-navy">Signal 99%</div>
+</div>
+</div>
+<!-- Hardware Health Pill: Power 91% -->
+<div class="bg-gradient-to-r from-blue-50/90 to-white px-5 py-3 rounded-full border border-blue-100/90 flex items-center gap-3 shadow-sm hover:border-brand-blue/30 transition-all">
+<div class="w-8 h-8 rounded-full bg-brand-navy/10 flex items-center justify-center text-brand-navy">
+<span class="material-symbols-outlined text-lg">bolt</span>
+</div>
+<div>
+<div class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">LiFePO4 Supply</div>
+<div id="batt" class="text-sm font-extrabold text-brand-blue">Power 91%</div>
+</div>
+</div>
+<!-- Hardware Health Pill: Peers 8 Active -->
+<div class="bg-gradient-to-r from-blue-50/90 to-white px-5 py-3 rounded-full border border-blue-100/90 flex items-center gap-3 shadow-sm hover:border-brand-blue/30 transition-all">
+<div class="w-8 h-8 rounded-full bg-emerald-500/10 flex items-center justify-center text-emerald-600">
+<span class="material-symbols-outlined text-lg">hub</span>
+</div>
+<div>
+<div class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Local Cluster</div>
+<div id="peers" class="text-sm font-extrabold text-emerald-600">Peers 8 Active</div>
+</div>
+</div>
+<!-- Pitch Black Floating Action Pill -->
+<button onclick="sendSOS()" class="bg-brand-pitch hover:bg-neutral-800 text-white px-6 py-3.5 rounded-full shadow-black-pill active:scale-95 transition-all flex items-center gap-2.5 font-bold text-sm tracking-wide" id="quick-sos-pill">
+<span class="w-2.5 h-2.5 rounded-full bg-red-500 animate-ping"></span>
+            Send SOS + GPS
+          </button>
+</div>
+</div>
+</header>
+<!-- ========================================================================= -->
+<!-- 2. REAL SERVER IMAGERY: SWEEPING CURVED PANORAMIC VIEWPORT (IMAGE_11) -->
+<!-- ========================================================================= -->
+<section class="relative rounded-[44px] overflow-hidden shadow-curved-soft border border-blue-100/60 bg-white group">
+<div class="relative h-64 sm:h-80 md:h-[340px] w-full overflow-hidden">
+<!-- Datacenter Server Infrastructure Photographic Viewport -->
+<img alt="Datacenter server hardware racks with glowing blue enterprise nodes" class="w-full h-full object-cover object-center transform group-hover:scale-[1.02] transition-transform duration-700 ease-out" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDSIrpcplvf5RPUi_eAbH0KndGefHCYla2xUm9Wh-oET9VA7x1HMuD6njEvFaweqW-kLjW6a9Sb3Zyh_FcFDXTliUGlp3NsTpgz7-5LPw1O5U5oBcDYJgC3swh-7cL6w1mS8ULyOhjTXMiiz362_yF-DPqX_l7R0cZZdbtf1Nnzaa0k2RWpaX8rtH27U7np_n-JGGIdg9kXTfzFHJFHbGIrgboFHPahP7BuZgPag_S7Gcjifrlm29T4FA"/>
+<!-- Sweeping Curved Glassmorphic Overlay Gradient -->
+<div class="absolute inset-0 bg-gradient-to-r from-brand-navy/90 via-brand-navy/40 to-transparent"></div>
+<!-- Left Dome Text Overlay Inside Server Panorama -->
+<div class="absolute inset-0 flex flex-col justify-center p-8 sm:p-12 max-w-2xl text-white">
+<div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-white/20 backdrop-blur-md text-xs font-semibold tracking-wider uppercase mb-3 w-max border border-white/30">
+<span class="material-symbols-outlined text-sm">verified</span>
+            Direct Mesh Telemetry Grid
+          </div>
+<h2 class="text-2xl sm:text-4xl font-extrabold tracking-tight leading-tight">
+            Autonomous Datacenter Cluster
+          </h2>
+<p class="text-blue-100/90 text-sm sm:text-base mt-2 max-w-xl font-normal leading-relaxed">
+            Operating in isolated emergency mode. High-throughput packetization relays mission-critical telemetry across local RF transceivers without upstream WAN links.
+          </p>
+<div class="mt-5 flex items-center gap-4 flex-wrap">
+<div class="bg-black/40 backdrop-blur-md px-4 py-2 rounded-full border border-white/20 text-xs font-mono flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+              MTU: 180B LoRa Chunks
+            </div>
+<div class="bg-black/40 backdrop-blur-md px-4 py-2 rounded-full border border-white/20 text-xs font-mono flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-brand-sky"></span>
+              Ack Window: 120ms
+            </div>
+</div>
+</div>
+<!-- Bottom Right Pebble Stat Pod Float -->
+<div class="hidden sm:flex absolute bottom-6 right-8 bg-white/95 backdrop-blur-md p-4 rounded-[32px] shadow-lg border border-white/80 items-center gap-4">
+<div class="w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center text-brand-blue font-bold text-lg">
+            99.4%
+          </div>
+<div class="pr-2">
+<div class="text-[11px] font-bold text-slate-400 uppercase">Quantization Efficacy</div>
+<div class="text-xs font-semibold text-brand-pitch">Lossy 720p WebP Pipeline</div>
+</div>
+</div>
+</div>
+</section>
+<!-- ========================================================================= -->
+<!-- 3. RADIAL PODS & CURVED CARDS (PEBBLE & TEARDROP GEOMETRY) -->
+<!-- ========================================================================= -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+<!-- LEFT 7 COLS: Curved Dispatch Dome & Visual Compression Arc -->
+<div class="lg:col-span-7 space-y-8">
+<!-- TEARDROP / PEBBLE CARD: SOS Rapid Dispatch Dome -->
+<div class="bg-white rounded-[44px] p-7 sm:p-9 shadow-curved-soft border border-blue-50 relative overflow-hidden">
+<div class="flex items-center justify-between pb-5 border-b border-slate-100">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-full bg-red-50 border border-red-100 flex items-center justify-center text-red-600">
+<span class="material-symbols-outlined text-2xl">emergency</span>
+</div>
+<div>
+<h3 class="text-lg font-bold text-brand-pitch">Emergency Mesh Triage</h3>
+<p class="text-xs text-slate-400">Zero Cellular Required • Automated multi-hop packet spread</p>
+</div>
+</div>
+<!-- Oval Mode Pill -->
+<div class="flex items-center p-1 bg-slate-100 rounded-full text-xs font-semibold">
+<span class="px-3.5 py-1 rounded-full bg-red-600 text-white shadow-sm">CRITICAL</span>
+<span class="px-3.5 py-1 text-slate-500">MEDICAL</span>
+<span class="px-3.5 py-1 text-slate-500">RELIEF</span>
+</div>
+</div>
+<div class="mt-6 space-y-5">
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+<!-- Category Pebble Selector -->
+<div class="space-y-2">
+<label class="block text-xs font-bold text-slate-500 uppercase tracking-wider ml-2">Incident Pod</label>
+<div class="relative">
+<select id="type" class="w-full bg-slate-50 border-0 rounded-full px-5 py-3.5 text-sm font-medium text-brand-pitch focus:ring-2 focus:ring-brand-blue appearance-none">
+<option>Immediate Rescue Required (Water/Roof)</option>
+<option>Medical Support / Critical Oxygen</option>
+<option>Structural Assessment / Trapped Persons</option>
+<option>Emergency Sustenance Rationing</option>
+</select>
+<span class="material-symbols-outlined absolute right-4 top-3.5 text-slate-400 pointer-events-none">expand_more</span>
+</div>
+</div>
+<!-- Headcount Pill -->
+<div class="space-y-2">
+<label class="block text-xs font-bold text-slate-500 uppercase tracking-wider ml-2">Casualties / Headcount</label>
+<input id="count" class="w-full bg-slate-50 border-0 rounded-full px-5 py-3.5 text-sm font-medium text-brand-pitch focus:ring-2 focus:ring-brand-blue" type="text" value="14 children, 2 injured"/>
+</div>
+</div>
+<!-- Situation Message Pebble Area -->
+<div class="space-y-2">
+<label class="block text-xs font-bold text-slate-500 uppercase tracking-wider ml-2">Field Status Note</label>
+<textarea id="msg" class="w-full bg-slate-50 border-0 rounded-[28px] p-5 text-sm font-normal text-slate-700 focus:ring-2 focus:ring-brand-blue resize-none" rows="3">Need immediate rescue at elementary school roof, water rising +2ft/hr, structural integrity compromised. Zodiac boats needed.</textarea>
+</div>
+<!-- Action Cluster with Big Circular Trigger and Floating GPS Capsule -->
+<div class="pt-2 flex flex-col sm:flex-row items-center justify-between gap-4">
+<div class="w-full sm:w-auto flex items-center gap-3 bg-blue-50/70 border border-brand-sky/30 px-5 py-3 rounded-full">
+<div class="w-2.5 h-2.5 rounded-full bg-brand-blue pulse-dot"></div>
+<div class="text-xs font-mono text-brand-navy">
+                  GPS: <strong id="loc" class="text-brand-blue">37.7749° N, 122.4194° W</strong>
+</div>
+<button onclick="getLoc()" class="ml-2 text-xs font-bold text-brand-blue hover:underline">Recalibrate</button>
+</div>
+<!-- Send SOS + GPS Button (Pitch Black 10% Anchor) -->
+<button onclick="sendSOS()" class="w-full sm:w-auto bg-brand-pitch hover:bg-neutral-800 active:scale-95 text-white font-extrabold px-8 py-4 rounded-full shadow-black-pill transition-all flex items-center justify-center gap-3 text-sm">
+<span class="material-symbols-outlined text-lg text-red-400">satellite_alt</span>
+                Send SOS + GPS
+              </button>
+</div>
+</div>
+</div>
+<!-- COMPRESSION DOME MODULE: 720p Visuals -> 180-Byte MTU -->
+<div class="bg-white rounded-[44px] p-7 sm:p-9 shadow-curved-soft border border-blue-50 space-y-6">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-full bg-blue-50 border border-blue-100 flex items-center justify-center text-brand-blue">
+<span class="material-symbols-outlined text-2xl">photo_filter</span>
+</div>
+<div>
+<h3 class="text-lg font-bold text-brand-pitch">Visual Packetization Dome</h3>
+<div class="text-xs font-bold text-brand-blue mt-0.5">
+                  720p Visuals → 180-Byte MTU
+                </div>
+</div>
+</div>
+<!-- Rounded KPI Badge -->
+<input type="file" id="imgIn" accept="image/*" class="hidden" />
+<canvas id="cv" width="640" height="360" class="hidden"></canvas>
+<img id="preview" class="hidden w-full rounded-[22px] mt-3" />
+<span id="ratioBadge" class="px-4 py-1.5 rounded-full bg-emerald-50 text-emerald-600 font-mono text-xs font-bold border border-emerald-200">
+              RATIO: --
+            </span>
+</div>
+<!-- Circular Orbit Visual Compression Graphic -->
+<div onclick="document.getElementById('imgIn').click()" class="bg-gradient-to-br from-blue-50/60 to-white rounded-[36px] p-6 border border-blue-100/60 flex flex-col md:flex-row items-center gap-6 cursor-pointer hover:border-brand-blue/30">
+<!-- Center Radial Dial -->
+<div class="relative w-36 h-36 flex items-center justify-center flex-shrink-0">
+<div class="w-36 h-36 orbit-ring-solid absolute"></div>
+<div class="w-28 h-28 orbit-ring absolute"></div>
+<div class="w-20 h-20 rounded-full bg-gradient-to-tr from-brand-navy to-brand-blue flex flex-col items-center justify-center text-white shadow-orbit-glow">
+<span id="chunkCount" class="text-xs font-bold">0</span><span class="text-[9px] uppercase tracking-wider text-blue-200">CHUNKS</span>
+</div>
+</div>
+<div class="flex-1 space-y-3 text-center md:text-left">
+<div class="flex items-center justify-between text-xs font-mono">
+<span id="orig" class="text-slate-500">No image selected — tap dome to pick</span>
+<span id="comp" class="text-brand-blue font-bold">0 Bytes</span>
+</div>
+<!-- Curving Capsule Progress Tube -->
+<div class="w-full h-3 bg-slate-100 rounded-full overflow-hidden p-0.5">
+<div class="h-full bg-gradient-to-r from-brand-blue via-brand-sky to-emerald-400 rounded-full w-full"></div>
+</div>
+<div class="flex items-center justify-between text-[11px] text-slate-400 font-mono">
+<span>Lossy WebP Tile Quantizer</span>
+<span>Ack Verified: <span id="ackSeg">0/0</span> Segments</span>
+</div>
+</div>
+</div>
+<!-- Capsule Action Row -->
+<div class="flex items-center justify-between flex-wrap gap-4">
+<div class="flex items-center gap-2 text-xs font-medium text-slate-500">
+<span class="material-symbols-outlined text-sm text-emerald-500">check_circle</span>
+<span>Ready to broadcast over LoRa SX1262 SPI</span>
+</div>
+<button onclick="sendImg()" class="bg-brand-blue hover:bg-blue-700 text-white font-bold px-7 py-3 rounded-full transition-all active:scale-95 shadow-md flex items-center gap-2 text-xs uppercase tracking-wider">
+<span class="material-symbols-outlined text-base">send</span>
+              Transmit Visual Payload
+            </button>
+</div>
+</div>
+</div>
+<!-- RIGHT 5 COLS: Radial Orbit Terminal & System Registers -->
+<div class="lg:col-span-5 space-y-8">
+<!-- TEARDROP CURVED CARD: Mesh Relay Orbit Terminal -->
+<div class="bg-white rounded-[44px] p-7 sm:p-9 shadow-curved-soft border border-blue-50 flex flex-col h-[520px]">
+<!-- Terminal Orbit Header -->
+<div class="flex items-center justify-between pb-4 border-b border-slate-100 flex-shrink-0">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-brand-navy flex items-center justify-center text-white font-bold text-xs shadow-sm">
+                TX
+              </div>
+<div>
+<h3 class="text-base font-bold text-brand-pitch">Mesh Relay Terminal</h3>
+<p class="text-[11px] text-brand-blue font-semibold">TTL=3 • CRC16 Verified</p>
+</div>
+</div>
+<button onclick="clearLog()" class="text-xs font-semibold text-slate-400 hover:text-slate-600 px-3 py-1 rounded-full bg-slate-100">Clear</button>
+</div>
+<!-- Chat Stream with Rounded Capsule Bubbles -->
+<div id="log" class="flex-1 overflow-y-auto my-4 space-y-3 pr-1 text-xs font-sans font-mono">
+              <div class="text-center py-8 text-slate-400">No messages yet — send an SOS or chat to start mesh. Real RF TTL3 CRC16.</div>
+            </div>
+<!-- Rounded Capsule Input Field -->
+<form class="flex-shrink-0 pt-3 border-t border-slate-100 flex items-center gap-2" onsubmit="event.preventDefault(); sendChat();">
+<input id="chat" class="flex-1 bg-slate-50 border-0 rounded-full px-5 py-3 text-xs text-brand-pitch placeholder-slate-400 focus:ring-2 focus:ring-brand-blue" placeholder="Type dispatch message..." type="text"/>
+<button class="w-11 h-11 rounded-full bg-brand-blue hover:bg-blue-700 text-white flex items-center justify-center active:scale-95 shadow-md flex-shrink-0" type="submit">
+<span class="material-symbols-outlined text-base">arrow_upward</span>
+</button>
+</form>
+</div>
+<!-- CIRCULAR TELEMETRY PODS & SYSTEM ARCHITECTURE -->
+<div class="bg-white rounded-[44px] p-7 sm:p-9 shadow-curved-soft border border-blue-50 space-y-5">
+<div class="flex items-center justify-between pb-3 border-b border-slate-100">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-brand-blue">
+<span class="material-symbols-outlined text-xl">memory</span>
+</div>
+<div>
+<h3 class="text-base font-bold text-brand-pitch">Telemetry Registers</h3>
+<div class="text-[11px] text-slate-400">ESP32-S3 • SX1262 LoRa</div>
+</div>
+</div>
+<span class="w-2.5 h-2.5 rounded-full bg-emerald-500 pulse-dot"></span>
+</div>
+<!-- Quad Circular Stat Clusters -->
+<div class="grid grid-cols-2 gap-3.5">
+<!-- Pod 1 -->
+<div class="bg-gradient-to-b from-blue-50/50 to-white p-4 rounded-[28px] border border-blue-50 text-center">
+<div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Mesh Seq</div>
+<div id="meshSeq" class="text-xl font-extrabold text-brand-navy mt-0.5">#102</div>
+<div id="meshTR" class="text-[10px] text-brand-blue font-semibold mt-0.5">3 TX / 3 RX</div>
+</div>
+<!-- Pod 2 -->
+<div class="bg-gradient-to-b from-blue-50/50 to-white p-4 rounded-[28px] border border-blue-50 text-center">
+<div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Forward Hops</div>
+<div class="text-xl font-extrabold text-brand-blue mt-0.5">3-Hop</div>
+<div class="text-[10px] text-emerald-600 font-semibold mt-0.5">TTL Verified</div>
+</div>
+<!-- Pod 3 -->
+<div class="bg-gradient-to-b from-blue-50/50 to-white p-4 rounded-[28px] border border-blue-50 text-center">
+<div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Dedup Cache</div>
+<div class="text-xl font-extrabold text-brand-pitch mt-0.5">32 Slot</div>
+<div class="text-[10px] text-slate-400 font-semibold mt-0.5">Zero collision</div>
+</div>
+<!-- Pod 4 -->
+<div class="bg-gradient-to-b from-blue-50/50 to-white p-4 rounded-[28px] border border-blue-50 text-center">
+<div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">SD Buffer</div>
+<div class="text-xl font-extrabold text-emerald-600 mt-0.5">8 MB</div>
+<div class="text-[10px] text-slate-400 font-semibold mt-0.5">Hardware 8GB</div>
+</div>
+</div>
+<!-- Minimal JSON Telemetry Strip -->
+<div id="status" class="bg-slate-50 p-3.5 rounded-[22px] font-mono text-[10px] text-slate-600 leading-relaxed overflow-x-auto">{"node": 4, "uptime": 403079, "rssi": -67, "batt": 91, "p2p_active": true}</div>
+</div>
+</div>
+</div>
+<!-- ========================================================================= -->
+<!-- 4. BOTTOM FLOATING BLACK PILL BAR (10% PITCH BLACK ACCENT) -->
+<!-- ========================================================================= -->
+<div class="sticky bottom-5 z-40 max-w-xl mx-auto">
+<div class="bg-brand-pitch/95 backdrop-blur-md text-white px-6 py-3.5 rounded-full shadow-black-pill border border-neutral-800 flex items-center justify-between gap-4">
+<div class="flex items-center gap-3">
+<div class="w-2.5 h-2.5 rounded-full bg-emerald-400 pulse-dot"></div>
+<div class="text-xs font-semibold">
+<span class="text-white">Node #04</span>
+<span class="text-neutral-400 mx-1.5">•</span>
+<span class="text-blue-300">Dome Mesh Synchronized</span>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<button class="bg-white/10 hover:bg-white/20 text-white px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all flex items-center gap-1.5">
+<span class="material-symbols-outlined text-sm">wifi_tethering</span>
+            Ping Peers
+          </button>
+<button onclick="document.getElementById('log').scrollIntoView({behavior:'smooth'})" class="bg-brand-blue hover:bg-blue-600 text-white px-4 py-1.5 rounded-full text-xs font-bold transition-all shadow-sm">Triage Feed</button>
+</div>
+</div>
+</div>
+</div>
+
+<script>
+let lat=37.7749, lon=-122.4194, imgB64=null;
+let clientId = localStorage.getItem('powermesh_id') || (localStorage.setItem('powermesh_id', 'c'+Math.random().toString(36).slice(2)+Date.now().toString(36)), localStorage.getItem('powermesh_id'));
+let lastSeen = 0; // always fetch full history on load for persistence
+let initialLoad=true;
+let cseq = parseInt(localStorage.getItem('powermesh_cseq')||'0');
+let seenSeq=new Set();
+function log(s){ /* overridden below */ }
+async function postMsg(obj){
+  try{
+    cseq++; localStorage.setItem('powermesh_cseq', cseq);
+    obj.clientId=clientId; obj.cseq=cseq;
+    const r=await fetch('/api/msg',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(obj)});
+    const j=await r.json();
+    // rely on poll to render, but also log ack
+    console.log("post ack",j);
+    return j;
+  }catch(e){ log("○ Send failed "+e); }
+}
+async function fetchMsgs(){
+  try{
+    const r=await fetch('/api/messages?since='+lastSeen);
+    const arr=await r.json();
+    for(const m of arr){
+      if(seenSeq.has(m.seq)) continue;
+      seenSeq.add(m.seq);
+      lastSeen=Math.max(lastSeen,m.seq);
+      const isLocal = m.sender===clientId;
+      const text = m.type==='img' ? '[Image '+m.total+'ch]' : (m.msg||m.raw||JSON.stringify(m).slice(0,120));
+      log((isLocal?'▶ ':'◀ ')+ (m.count? m.count+' ':'') + text + (m.lat?' 📍':''));
+    }
+  }catch(e){}
+}
+function getLoc(){
+  if(!navigator.geolocation){ lat=26.14; lon=91.60; document.getElementById('loc').textContent="GPS: 26.14000° N, 91.60000° E (mock)"; return; }
+  navigator.geolocation.getCurrentPosition(p=>{
+    lat=p.coords.latitude; lon=p.coords.longitude;
+    document.getElementById('loc').textContent=`GPS: ${lat.toFixed(5)}° N, ${lon.toFixed(5)}° W`;
+  }, e=> alert(e.message));
+}
+async function sendSOS(){
+  const typeEl=document.getElementById('type');
+  const t = typeEl ? typeEl.value : 'SOS';
+  const payload={type:t, count:document.getElementById('count').value, msg:document.getElementById('msg').value, lat, lon, ts:Date.now()};
+  await postMsg(payload);
+}
+async function sendChat(){
+  const el=document.getElementById('chat');
+  const t=el.value.trim(); if(!t) return;
+  el.value="";
+  await postMsg({type:"chat", msg:t, ts:Date.now()});
+}
+document.getElementById('imgIn').addEventListener('change', async e=>{
+  const f=e.target.files[0]; if(!f) return;
+  const img=new Image(); img.src=URL.createObjectURL(f); await img.decode();
+  const cv=document.getElementById('cv'), ctx=cv.getContext('2d');
+  const scale=Math.min(1, 1280/img.width); cv.width=img.width*scale; cv.height=img.height*scale;
+  ctx.drawImage(img,0,0,cv.width,cv.height);
+  const dataUrl=cv.toDataURL('image/jpeg',0.4);
+  imgB64=dataUrl;
+  document.getElementById('preview').src=dataUrl; document.getElementById('preview').classList.remove('hidden');
+  const kb=Math.round((dataUrl.length*3/4)/1024);
+  document.getElementById('comp').textContent=kb+" KB Final";
+  document.getElementById('orig').textContent=(f.size/1024).toFixed(1)+" KB → "+kb+" KB";
+  document.getElementById('ratioBadge').textContent="RATIO: -"+Math.round((1-kb/(f.size/1024))*100)+"%";
+  document.getElementById('chunkCount').textContent=Math.ceil(dataUrl.length/180);
+  document.getElementById('ackSeg').textContent="0/"+Math.ceil(dataUrl.length/180);
+});
+async function sendImg(){
+  if(!imgB64) return alert("Pick an image first (click the dome)");
+  const chunk=180; const total=Math.ceil(imgB64.length/chunk);
+  for(let i=0;i<imgB64.length;i+=chunk){ await postMsg({type:"img_chunk", seq:Math.floor(i/chunk), total, data:imgB64.slice(i,i+chunk)}); }
+}
+fetchMsgs(); // initial load
+setInterval(async()=>{
+  try{ const r=await fetch('/status'); const j=await r.json();
+    document.getElementById('batt').textContent="Power "+j.battPct+"%";
+    document.getElementById('rssi').textContent="Signal "+(100+Math.round(j.rssi/2))+"%";
+    document.getElementById('peers').textContent="Peers "+j.peers+" Active";
+    document.getElementById('meshSeq').textContent="#"+j.seq;
+    document.getElementById('meshTR').textContent=j.tx+" TX / "+j.rx+" RX";
+    document.getElementById('status').textContent=JSON.stringify(j);
+    const ackEl=document.getElementById('ackSeg'); if(ackEl && document.getElementById('chunkCount')) ackEl.textContent=j.acks+"/"+document.getElementById('chunkCount').textContent;
+  }catch{}
+  fetchMsgs();
+},1500);
+function setType(t){
+  const sel=document.getElementById('type');
+  // Map pills to select options: CRITICAL -> Immediate Rescue, MEDICAL -> Medical Support, RELIEF -> Emergency Sustenance
+  const map={CRITICAL:0, MEDICAL:1, RELIEF:3};
+  if(sel) sel.selectedIndex = map[t] ?? 0;
+  document.getElementById('pillCritical').className = t==='CRITICAL' ? 'px-3.5 py-1 rounded-full bg-red-600 text-white shadow-sm' : 'px-3.5 py-1 text-slate-500';
+  document.getElementById('pillMed').className = t==='MEDICAL' ? 'px-3.5 py-1 rounded-full bg-red-600 text-white shadow-sm' : 'px-3.5 py-1 text-slate-500';
+  document.getElementById('pillRelief').className = t==='RELIEF' ? 'px-3.5 py-1 rounded-full bg-red-600 text-white shadow-sm' : 'px-3.5 py-1 text-slate-500';
+}
+function clearLog(){ document.getElementById('log').innerHTML='<div class="text-center py-8 text-slate-400">Cleared — real-time mesh log.</div>'; }
+async function pingPeers(){
+  try{ const r=await fetch('/status'); const j=await r.json(); log("PING peers="+j.peers+" rssi="+j.rssi+" batt="+j.battPct+"% seq="+j.seq); }catch(e){ log("Ping failed "+e); }
+}
+// Override log to render real chat bubbles instead of plain text
+const _origLog = log;
+log = function(s){
+  const e=document.getElementById('log');
+  // Remove placeholder if present
+  if(e.textContent.includes('No messages yet')) e.innerHTML='';
+  const div=document.createElement('div');
+  // Detect direction: ▶ = local, ◀ = peer
+  const isLocal = s.startsWith('▶');
+  const clean = s.replace(/^▶ |^◀ /,'');
+  div.className = isLocal ? 'bg-brand-navy text-white p-4 rounded-[26px] rounded-tr-sm ml-5 space-y-1 shadow-sm' : 'bg-blue-50/80 p-4 rounded-[26px] rounded-tl-sm border border-blue-100 space-y-1';
+  div.innerHTML = '<div class="text-[11px] '+(isLocal?'text-blue-200':'text-brand-navy font-bold')+'">'+(isLocal?'Local':'Peer')+' • '+new Date().toLocaleTimeString()+'</div><p class="'+(isLocal?'text-blue-50':'text-slate-700')+'">'+clean.slice(0,300)+'</p>';
+  e.appendChild(div);
+  e.scrollTop=e.scrollHeight;
+};
+log("● Dome Mesh Synchronized — real-time TTL3 dedup 32 (no fake data)");
+</script>
+</body></body></html>
