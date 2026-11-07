@@ -1,0 +1,13 @@
+# Install via Arduino Library Manager (Wokwi handles this automatically)
+# For PlatformIO / Arduino CLI:
+#   arduino-cli lib install "Adafruit GFX Library" "Adafruit SSD1306" "ArduinoJson"
+#   (ESPAsyncWebServer + AsyncTCP are ESP32-only — install via Library Manager search)
+
+Adafruit GFX Library@1.11.11
+Adafruit SSD1306@2.5.13
+ArduinoJson@7.2.1
+ESP Async WebServer@3.7.8
+AsyncTCP@3.4.1
+SD@2.0.0 (built-in)
+DNSServer (built-in esp32 core)
+WiFi (built-in esp32 core)
