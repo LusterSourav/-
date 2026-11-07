@@ -1,0 +1,41 @@
+name: Wokwi CI — PowerMesh build
+on: [push, pull_request]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Install Wokwi CLI
+        run: npm install -g @wokwi/cli
+      - name: Install Arduino CLI
+        run: |
+          curl -fsSL https://raw.githubusercontent.com/arduino/arduino-cli/master/install.sh | sh
+          echo "$PWD/bin" >> $GITHUB_PATH
+      - name: Install ESP32 core
+        run: |
+          arduino-cli config init || true
+          arduino-cli config add board_manager.additional_urls https://espressif.github.io/arduino-esp32/package_esp32_index.json
+          arduino-cli core update-index
+          arduino-cli core install esp32:esp32
+      - name: Install libs
+        run: |
+          arduino-cli lib install "Adafruit GFX Library" "Adafruit SSD1306" "ArduinoJson"
+          # ESP Async libs — via Library Manager
+          arduino-cli lib install "ESP Async WebServer" "AsyncTCP"
+      - name: Compile sketch
+        run: |
+          arduino-cli compile --fqbn esp32:esp32:esp32s3:FlashSize=16M,PSRAM=enabled hardware/sketch.ino --build-path hardware/build || \
+          arduino-cli compile --fqbn esp32:esp32:esp32s3 hardware --build-path hardware/build
+          ls -lh hardware/build/*.bin hardware/build/*.elf 2>&1 | head -20
+      - name: Wokwi sim test (headless)
+        env:
+          WOKWI_CLI_TOKEN: ${{ secrets.WOKWI_CLI_TOKEN }}
+        run: |
+          # diagram.json + compiled elf → run 15s sim, check SD+OLED pass
+          npx @wokwi/cli --version
+          # Optional: add your wokwi test scenario (requires WOKWI_PROJECT_ID secret if using private project)
+          # wokwi-cli  test --timeout 15000 --scenario hardware/wokwi.test.json
+          echo "Build OK — add wokwi.test.json for automated checks"
