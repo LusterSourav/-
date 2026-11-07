@@ -1,0 +1,15 @@
+Ref,Qty,Value,LCSC/PN,Notes,Unit INR,Total INR
+U1,1,ESP32-S3-WROOM-1-N16R8,ESP32-S3-WROOM-1,16MB Flash 8MB PSRAM Octal,650,650
+RF1,1,NiceRF SA618F30-FD 433MHz 1W,SA618F30-FD,410-490MHz customizable 150-960MHz 500KHz BW -117dBm,1200,1200
+ANT1,1,5dBi SMA 433MHz Whip,ANT-433-5DBI,915/433 dual specify 433MHz for India ISM,180,180
+BMS1,1,3S 10A BMS 11.1V,HW-10A-3S,Balancing + overcharge/overdischarge,180,180
+BAT1-3,3,18650 3000mAh Li-ion,NCR18650-3000,3S1P 11.1V nominal 9Ah,220,660
+BUCK1,1,XL4015 5V/3A Buck,XL4015-5V,2x needed: 5V USB + 3.3V logic; high-efficiency,120,120
+BUCK2,1,XL4015 3.3V Buck,XL4015-3V3,ESP32 + sensors,120,120
+OLED1,1,SSD1306 0.96" I2C 128x64,SSD1306-096,I2C 0x3C,220,220
+SD1,1,MicroSD Card 8GB + SPI Socket,MICROSD-8GB,FAT32,250,250
+LED1,1,3W White LED + driver,3W-WHITE,Search beacon + flashlight,90,90
+USB1,1,USB-A 5V Out + USB-C In + 12V DC Jack,USB-A-C-JACK,Power bank + charging,80,80
+MISC,1,IP54 Enclosure + PCB + SMA + Wires,ENC-IP54,Custom SMT Make-in-India,400,400
+,,,,,Prototype Total,4150,4150
+,,,,,Batch target per node (<3500 at 100+ qty via LCSC/JLCPCB SMT),,,3500
