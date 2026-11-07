@@ -1,0 +1,30 @@
+# Wokwi — works with VS Code OR pure CLI (no VS Code needed)
+# VS Code path:
+#   1) Install extension wokwi.wokwi-vscode → F1 → Wokwi: Request License → approve
+#   2) F1 → Wokwi: Start Simulator
+# CLI path (no VS Code — use your token):
+#   export WOKWI_CLI_TOKEN=wok_xxx  # from https://wokwi.com/dashboard/tokens (or source .env)
+#   bash run-cli.sh                 # compiles + starts sim with private gateway at http://localhost:9080
+#   # or manually: npx @wokwi/cli start
+
+[wokwi]
+version = 1
+# For WOKWI CLOUD (wokwi.com free) — leave firmware commented, Wokwi compiles sketch.ino on servers
+# firmware = "build/esp32s3.elf"
+# elf      = "build/esp32s3.elf"
+# For LOCAL high-perf (wokwi-cli + your token) — uncomment after `arduino-cli compile`
+# firmware = "build/sketch.ino.elf"
+# elf      = "build/sketch.ino.elf"
+
+[[net.forward]]
+from = "localhost:9080"
+to   = "target:80"
+
+# Optional: forward second node on different port for dual-node mesh test
+# [[net.forward]]
+# from = "localhost:9081"
+# to   = "target:80"
+
+[serial]
+# RFC2217 TCP serial for external monitors
+# port = 9333
